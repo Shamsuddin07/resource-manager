@@ -10,15 +10,21 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddPodDialogComponent } from './add-pod-dialog/add-pod-dialog';
 =======
 >>>>>>> 248885c (UI updates)
+=======
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { AddPodDialogComponent } from './add-pod-dialog/add-pod-dialog';
+>>>>>>> 3ee9e61 (addPod and other changes)
 
 @Component({
   selector: 'app-root',
   imports: [
     CommonModule, FormsModule, HttpClientModule, RouterOutlet,
+<<<<<<< HEAD
 <<<<<<< HEAD
     MatCardModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatDividerModule,
     MatDialogModule,
@@ -26,6 +32,11 @@ import { AddPodDialogComponent } from './add-pod-dialog/add-pod-dialog';
 =======
     MatCardModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatDividerModule
 >>>>>>> 248885c (UI updates)
+=======
+    MatCardModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatDividerModule,
+    MatDialogModule,
+    AddPodDialogComponent
+>>>>>>> 3ee9e61 (addPod and other changes)
   ],
   templateUrl: './app.html',
   styleUrl: './app.css'
@@ -169,5 +180,17 @@ export class App {
 
   get totalPods() {
     return this.servers.reduce((acc: number, s: any) => acc + (s.pods?.length || 0), 0);
+  }
+
+  get allocatedCPU() {
+    return this.servers.reduce((acc: number, s: any) =>
+      acc + ((s.resources?.total?.gpus || 0) - (s.resources?.available?.gpus || 0)), 0
+    );
+  }
+
+  get allocatedMemory() {
+    return this.servers.reduce((acc: number, s: any) =>
+      acc + ((s.resources?.total?.ram_gb || 0) - (s.resources?.available?.ram_gb || 0)), 0
+    );
   }
 }
