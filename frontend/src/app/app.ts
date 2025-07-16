@@ -3,10 +3,23 @@ import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { AddPodDialogComponent } from './add-pod-dialog/add-pod-dialog';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, FormsModule, HttpClientModule, RouterOutlet],
+  imports: [
+    CommonModule, FormsModule, HttpClientModule, RouterOutlet,
+    MatCardModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatDividerModule,
+    MatDialogModule,
+    AddPodDialogComponent
+  ],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -29,7 +42,7 @@ export class App {
   };
   message = '';
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private dialog: MatDialog) {
     this.fetchServers();
   }
 
@@ -100,6 +113,29 @@ export class App {
     });
   }
 
+  openAddPodDialog() {
+    const dialogRef = this.dialog.open(AddPodDialogComponent, {
+      width: '480px',
+      data: { servers: this.servers }
+    });
+    dialogRef.componentInstance.podCreated.subscribe((podData: any) => {
+      this.createPodFromDialog(podData);
+    });
+  }
+
+  createPodFromDialog(podData: any) {
+    this.http.post('http://127.0.0.1:5000/create', podData).subscribe({
+      next: () => {
+        this.message = `Pod ${podData.PodName} created.`;
+        this.fetchServers();
+        setTimeout(() => this.message = '', 3000);
+      },
+      error: (err) => {
+        this.message = err?.error?.error || 'Failed to create pod.';
+      }
+    });
+  }
+
   compareServers = (a: any, b: any) => a && b && a.id === b.id;
 
   updatePod(pod: any, updatedFields: any) {
@@ -122,5 +158,21 @@ export class App {
         this.message = 'Failed to update pod.';
       }
     });
+  }
+
+  get totalPods() {
+    return this.servers.reduce((acc: number, s: any) => acc + (s.pods?.length || 0), 0);
+  }
+
+  get allocatedCPU() {
+    return this.servers.reduce((acc: number, s: any) =>
+      acc + ((s.resources?.total?.gpus || 0) - (s.resources?.available?.gpus || 0)), 0
+    );
+  }
+
+  get allocatedMemory() {
+    return this.servers.reduce((acc: number, s: any) =>
+      acc + ((s.resources?.total?.ram_gb || 0) - (s.resources?.available?.ram_gb || 0)), 0
+    );
   }
 }
