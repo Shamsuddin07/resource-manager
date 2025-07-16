@@ -160,20 +160,7 @@ export class App {
     });
   }
 
-
   get totalPods() {
     return this.servers.reduce((acc: number, s: any) => acc + (s.pods?.length || 0), 0);
-  }
-
-  get allocatedCPU() {
-    return this.servers.reduce((acc: number, s: any) =>
-      acc + ((s.resources?.total?.gpus || 0) - (s.resources?.available?.gpus || 0)), 0
-    );
-  }
-
-  get allocatedMemory() {
-    return this.servers.reduce((acc: number, s: any) =>
-      acc + ((s.resources?.total?.ram_gb || 0) - (s.resources?.available?.ram_gb || 0)), 0
-    );
   }
 }
