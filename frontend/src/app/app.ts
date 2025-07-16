@@ -9,16 +9,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { AddPodDialogComponent } from './add-pod-dialog/add-pod-dialog';
 
 @Component({
   selector: 'app-root',
   imports: [
     CommonModule, FormsModule, HttpClientModule, RouterOutlet,
-    MatCardModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatDividerModule,
-    MatDialogModule,
-    AddPodDialogComponent
+    MatCardModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatDividerModule
   ],
   templateUrl: './app.html',
   styleUrl: './app.css'
